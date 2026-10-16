@@ -1,0 +1,14 @@
+{
+  "aisles": {
+    "Candy": 4,
+    "Chips": 3,
+    "Soda": 2
+  },
+  "asset_stamp": "20261016f",
+  "backlog": 16,
+  "build_date": "2026-10-16",
+  "collections": 3,
+  "product_pages": 9,
+  "store": "YumRare",
+  "total_shelved": 9
+}
