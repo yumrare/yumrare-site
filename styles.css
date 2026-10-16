@@ -215,7 +215,7 @@ h1.yr-page{font-size:clamp(1.9rem,5vw,2.7rem);font-weight:900;letter-spacing:-.0
 .yr-steps b{display:block;font-size:1.5rem;color:var(--violet)}
 .yr-aislelinks{display:flex;gap:10px;flex-wrap:wrap;margin:18px 0}
 footer.yr-foot{background:var(--ink);color:#D9D3E8;margin-top:44px;padding:38px 0 30px}
-.yr-footgrid{display:grid;grid-template-columns:1.5fr .8fr 1fr 1fr;gap:24px}
+.yr-footgrid{display:grid;grid-template-columns:1.5fr .8fr 1fr;gap:24px}
 footer.yr-foot .yr-paylabel{color:#BDB4D9}
 footer.yr-foot .yr-payrow{margin:14px 0 0}
 @media(max-width:760px){.yr-footgrid{grid-template-columns:1fr 1fr}}
