@@ -71,7 +71,7 @@
     }
   }
 
-  /* ---------- aisle filters: rarity + origin + maker + stock, deep-linkable ---------- */
+  /* ---------- aisle filters: rarity + stock, ?tier= deep-linkable ---------- */
   all('[data-yr-filters]').forEach(function(bar){
     var grid = document.getElementById(bar.getAttribute('data-yr-filters'));
     if(!grid) return;
@@ -80,10 +80,8 @@
     var count = bar.querySelector('[data-yr-count]');
     var stockBtn = bar.querySelector('[data-yr-stock]');
     var tierBtns = all('[data-yr-tier]', bar);
-    var originBtns = all('[data-yr-origin]', bar);
-    var makerBtns = all('[data-yr-maker]', bar);
     var cards = all('.yr-card', grid);
-    var tier = 'all', origin = 'all', maker = 'all', stock = false;
+    var tier = 'all', stock = false;
     function setGroup(btns, attr, val){
       btns.forEach(function(b){
         var on = b.getAttribute(attr) === val;
@@ -95,10 +93,8 @@
       var shown = 0;
       cards.forEach(function(c){
         var okT = tier === 'all' || c.getAttribute('data-tier') === tier;
-        var okO = origin === 'all' || (c.getAttribute('data-origin') || '').toLowerCase() === origin.toLowerCase();
-        var okM = maker === 'all' || (c.getAttribute('data-maker') || '').toLowerCase() === maker.toLowerCase();
         var okS = !stock || c.getAttribute('data-stock') === 'current';
-        var vis = okT && okO && okM && okS;
+        var vis = okT && okS;
         c.style.display = vis ? '' : 'none';
         if(vis){
           shown++;
@@ -119,20 +115,6 @@
         apply();
       });
     });
-    originBtns.forEach(function(b){
-      b.addEventListener('click', function(){
-        origin = b.getAttribute('data-yr-origin');
-        setGroup(originBtns, 'data-yr-origin', origin);
-        apply();
-      });
-    });
-    makerBtns.forEach(function(b){
-      b.addEventListener('click', function(){
-        maker = b.getAttribute('data-yr-maker');
-        setGroup(makerBtns, 'data-yr-maker', maker);
-        apply();
-      });
-    });
     if(stockBtn) stockBtn.addEventListener('click', function(){
       stock = !stock;
       stockBtn.classList.toggle('on', stock);
@@ -140,28 +122,10 @@
       apply();
     });
     var params = new URLSearchParams(window.location.search);
-    var qTier = params.get('tier'), qOrigin = params.get('origin'), qMaker = params.get('maker');
+    var qTier = params.get('tier');
     if(qTier && tierBtns.some(function(b){ return b.getAttribute('data-yr-tier') === qTier; })){
       tier = qTier;
       setGroup(tierBtns, 'data-yr-tier', tier);
-    }
-    if(qOrigin){
-      var match = originBtns.filter(function(b){
-        return (b.getAttribute('data-yr-origin') || '').toLowerCase() === qOrigin.toLowerCase();
-      })[0];
-      if(match){
-        origin = match.getAttribute('data-yr-origin');
-        setGroup(originBtns, 'data-yr-origin', origin);
-      }
-    }
-    if(qMaker){
-      var mMatch = makerBtns.filter(function(b){
-        return (b.getAttribute('data-yr-maker') || '').toLowerCase() === qMaker.toLowerCase();
-      })[0];
-      if(mMatch){
-        maker = mMatch.getAttribute('data-yr-maker');
-        setGroup(makerBtns, 'data-yr-maker', maker);
-      }
     }
     apply();
   });
@@ -287,45 +251,6 @@
       }
     });
   });
-
-  /* ---------- recently viewed: record on product pages, render on Home ----------
-     Slugs only, through the safe-storage helper above (never the raw
-     storage API). Most recent first, capped at 4, deduped, and filtered
-     to items that exist in the catalog. Home renders clones of the
-     featured-rail cards — literally the same card component — into the
-     rail's grid, and the section stays hidden when there is nothing
-     to show. */
-  var RECENT_KEY = 'yumrare-recent-v1';
-  function readRecent(){
-    try {
-      var v = JSON.parse(store.get(RECENT_KEY) || '[]');
-      if(!Array.isArray(v)) return [];
-      return v.filter(function(x){ return typeof x === 'string' && !!bySlug[x]; });
-    } catch(e){ return []; }
-  }
-  var prodEl = one('[data-yr-product]');
-  if(prodEl){
-    var pSlug = prodEl.getAttribute('data-yr-slug');
-    if(pSlug && bySlug[pSlug]){
-      var rec = readRecent().filter(function(x){ return x !== pSlug; });
-      rec.unshift(pSlug);
-      store.set(RECENT_KEY, JSON.stringify(rec.slice(0, 4)));
-    }
-  }
-  var recentSec = one('[data-yr-recent]');
-  if(recentSec){
-    var rGrid = recentSec.querySelector('[data-yr-recent-grid]');
-    var railEl = one('[data-yr-rail]');
-    if(rGrid && railEl){
-      var railCards = all('.yr-card', railEl);
-      readRecent().forEach(function(slug){
-        var src = null;
-        railCards.forEach(function(c){ if(!src && c.getAttribute('data-slug') === slug) src = c; });
-        if(src && src.cloneNode) rGrid.appendChild(src.cloneNode(true));
-      });
-      if(rGrid.children.length) recentSec.hidden = false;
-    }
-  }
 
   /* ---------- search ---------- */
   var searchBox = one('#yr-search');
