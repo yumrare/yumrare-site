@@ -150,6 +150,14 @@ p.yr-sub{margin:0 0 18px;color:var(--muted);max-width:680px}
 .yr-fbtn:active{transform:translateY(1px)}
 .yr-fbtn.on{background:var(--ink);color:#fff}
 .yr-count{color:var(--faint);font-size:.9rem;margin-left:2px}
+.yr-sortsel{font:inherit;font-weight:700;color:var(--ink);background:#fff;border:2px solid var(--ink);border-radius:var(--r-pill);padding:6px 14px;min-height:44px;cursor:pointer}
+.yr-sortsel:hover{background:#EFE7D3}
+.yr-sharewrap{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:2px}
+.yr-sharebtn{display:inline-flex;align-items:center;gap:8px;min-height:44px;border:2px solid var(--ink);background:#fff;color:var(--ink);font-weight:800;border-radius:var(--r-pill);padding:8px 16px;font-size:var(--fs-sm);cursor:pointer;font-family:inherit}
+.yr-sharebtn svg{width:18px;height:18px;stroke:var(--ink);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.yr-sharebtn:hover{background:#EFE7D3}
+.yr-sharebtn:active{transform:translateY(1px)}
+.yr-share-note{font-size:var(--fs-sm);font-weight:700;color:var(--teal)}
 .yr-empty{border:2px dashed #B9B0D0;border-radius:var(--r-m);background:#fff;color:var(--muted);padding:var(--s5);text-align:center;max-width:680px}
 .yr-mkt,.yr-fbtn,.yr-tile,.yr-cta,.yr-util,.yr-buy,.yr-stashbtn,.yr-news button,.yr-railbtn{transition:background-color .18s ease,box-shadow .18s ease,transform .18s ease,filter .18s ease}
 .yr-payrow{display:flex;gap:var(--s2);flex-wrap:wrap;align-items:center;margin:0 0 18px}
@@ -270,7 +278,7 @@ footer.yr-foot .yr-payrow{margin:14px 0 0}
 }
 @media print{
   body{background:#fff;color:#000}
-  .yr-announce,header.yr-head,footer.yr-foot,.yr-utils,.yr-news,.yr-filters,.yr-skiplink,.yr-backdrop,.yr-searchbox,.yr-drawer,.yr-mobilebar,.yr-railbtn{display:none!important}
+  .yr-announce,header.yr-head,footer.yr-foot,.yr-utils,.yr-news,.yr-filters,.yr-skiplink,.yr-backdrop,.yr-searchbox,.yr-drawer,.yr-mobilebar,.yr-railbtn,.yr-sharewrap{display:none!important}
   .wrap{max-width:none;padding:0}
   .yr-prose p,.yr-prose ul{max-width:none}
   a{color:#000;text-decoration:none}
@@ -279,3 +287,15 @@ footer.yr-foot .yr-payrow{margin:14px 0 0}
   .pg-policy .yr-prose h2:first-of-type{page-break-before:avoid}
 }
 @media (prefers-reduced-motion: reduce){*{transition:none!important;animation:none!important}html{scroll-behavior:auto}}
+
+/* Round 6: stock photos, clickable card bios, contact form */
+.yr-art.has-photo{background:#fff}
+.yr-photo{width:100%;height:100%;object-fit:cover;display:block}
+.yr-bio{display:block;margin-top:8px;color:var(--ink);font-size:var(--fs-sm);line-height:1.5;text-decoration:none}
+.yr-bio:hover{text-decoration:underline}
+.yr-cform{max-width:640px;margin-top:10px}
+.yr-cform label{display:block;font-weight:700;margin:16px 0 6px}
+.yr-cform input[type="text"],.yr-cform input[type="email"],.yr-cform select,.yr-cform textarea{width:100%;border:2px solid var(--ink);border-radius:12px;padding:11px 14px;font:inherit;background:#fff;color:var(--ink)}
+.yr-cform textarea{resize:vertical}
+.yr-cform button{margin-top:18px}
+.yr-honey{position:absolute!important;left:-9999px!important;width:1px;height:1px;opacity:0}

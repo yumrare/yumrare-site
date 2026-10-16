@@ -194,6 +194,139 @@
     setQty(1);
   });
 
+  /* ---------- listing sort: Featured / Name / Year / Tier ----------
+     Reorders the grid's card nodes in place; the filter block above keeps
+     working because it holds element references, not positions. Year reads
+     the build-time data-year (first 4-digit year in the item's years
+     string); items with no stated year always sort last. All sorts are
+     stable — ties keep the featured order. */
+  all('[data-yr-sort]').forEach(function(sel){
+    var grid = document.getElementById(sel.getAttribute('data-yr-sort'));
+    if(!grid) return;
+    sel.addEventListener('change', function(){
+      var mode = sel.value;
+      var cards = all('.yr-card', grid);
+      var orig = cards.slice();
+      function yearOf(c){
+        var y = parseInt(c.getAttribute('data-year'), 10);
+        return isNaN(y) ? null : y;
+      }
+      var sorted = cards.slice();
+      sorted.sort(function(a, b){
+        var r = 0;
+        if(mode === 'name'){
+          var na = (a.getAttribute('data-name') || '').toLowerCase();
+          var nb = (b.getAttribute('data-name') || '').toLowerCase();
+          r = na < nb ? -1 : (na > nb ? 1 : 0);
+        }else if(mode === 'year'){
+          var ya = yearOf(a), yb = yearOf(b);
+          if(ya === null && yb === null) r = 0;
+          else if(ya === null) r = 1;
+          else if(yb === null) r = -1;
+          else r = ya - yb;
+        }else if(mode === 'tier'){
+          r = (parseInt(a.getAttribute('data-tier-rank'), 10) || 0)
+            - (parseInt(b.getAttribute('data-tier-rank'), 10) || 0);
+        }
+        return r !== 0 ? r : orig.indexOf(a) - orig.indexOf(b);
+      });
+      sorted.forEach(function(c){ grid.appendChild(c); });
+    });
+  });
+
+  /* ---------- share this find: Web Share API, clipboard fallback ---------- */
+  all('[data-yr-share]').forEach(function(btn){
+    var wrap = btn.parentElement;
+    var note = wrap ? wrap.querySelector('[data-yr-share-note]') : null;
+    var noteTimer = null;
+    function say(msg){
+      if(!note) return;
+      note.textContent = msg;
+      if(noteTimer) window.clearTimeout(noteTimer);
+      if(msg) noteTimer = window.setTimeout(function(){ note.textContent = ''; }, 2600);
+    }
+    function legacyCopy(url, done){
+      if(typeof document.execCommand !== 'function' || !document.body){ done(false); return; }
+      try {
+        var ta = document.createElement('textarea');
+        ta.value = url;
+        ta.setAttribute('readonly', '');
+        ta.style.position = 'absolute';
+        ta.style.left = '-9999px';
+        document.body.appendChild(ta);
+        ta.select();
+        var okCopy = false;
+        try { okCopy = !!document.execCommand('copy'); } catch(e){ okCopy = false; }
+        document.body.removeChild(ta);
+        done(okCopy);
+      } catch(e){ done(false); }
+    }
+    function copyLink(url){
+      var finish = function(okCopy){
+        say(okCopy ? 'Link copied' : 'Copy failed — the link lives in your address bar');
+      };
+      if(typeof navigator !== 'undefined' && navigator.clipboard && navigator.clipboard.writeText){
+        var p = null;
+        try { p = navigator.clipboard.writeText(url); } catch(e){ p = null; }
+        if(p && p.then) p.then(function(){ finish(true); }, function(){ legacyCopy(url, finish); });
+        else if(p) finish(true);
+        else legacyCopy(url, finish);
+      }else{
+        legacyCopy(url, finish);
+      }
+    }
+    btn.addEventListener('click', function(){
+      var url = btn.getAttribute('data-share-url') || window.location.href;
+      var title = btn.getAttribute('data-share-title') || document.title;
+      if(typeof navigator !== 'undefined' && navigator.share){
+        var pr = null;
+        try { pr = navigator.share({title: title, url: url}); } catch(e){ pr = null; }
+        if(pr && pr.catch) pr.catch(function(){});
+      }else{
+        copyLink(url);
+      }
+    });
+  });
+
+  /* ---------- recently viewed: record on product pages, render on Home ----------
+     Slugs only, through the safe-storage helper above (never the raw
+     storage API). Most recent first, capped at 4, deduped, and filtered
+     to items that exist in the catalog. Home renders clones of the
+     featured-rail cards — literally the same card component — into the
+     rail's grid, and the section stays hidden when there is nothing
+     to show. */
+  var RECENT_KEY = 'yumrare-recent-v1';
+  function readRecent(){
+    try {
+      var v = JSON.parse(store.get(RECENT_KEY) || '[]');
+      if(!Array.isArray(v)) return [];
+      return v.filter(function(x){ return typeof x === 'string' && !!bySlug[x]; });
+    } catch(e){ return []; }
+  }
+  var prodEl = one('[data-yr-product]');
+  if(prodEl){
+    var pSlug = prodEl.getAttribute('data-yr-slug');
+    if(pSlug && bySlug[pSlug]){
+      var rec = readRecent().filter(function(x){ return x !== pSlug; });
+      rec.unshift(pSlug);
+      store.set(RECENT_KEY, JSON.stringify(rec.slice(0, 4)));
+    }
+  }
+  var recentSec = one('[data-yr-recent]');
+  if(recentSec){
+    var rGrid = recentSec.querySelector('[data-yr-recent-grid]');
+    var railEl = one('[data-yr-rail]');
+    if(rGrid && railEl){
+      var railCards = all('.yr-card', railEl);
+      readRecent().forEach(function(slug){
+        var src = null;
+        railCards.forEach(function(c){ if(!src && c.getAttribute('data-slug') === slug) src = c; });
+        if(src && src.cloneNode) rGrid.appendChild(src.cloneNode(true));
+      });
+      if(rGrid.children.length) recentSec.hidden = false;
+    }
+  }
+
   /* ---------- search ---------- */
   var searchBox = one('#yr-search');
   var searchBtn = one('[data-yr-search-open]');
@@ -205,7 +338,7 @@
     var raw = searchInput.value || '';
     var q = raw.trim().toLowerCase();
     var res = !q ? INDEX.slice() : INDEX.filter(function(it){
-      var hay = (it.name + ' ' + it.maker + ' ' + it.aisleLabel + ' ' + it.origin + ' ' + it.flavors.join(' ')).toLowerCase();
+      var hay = (it.name + ' ' + it.maker + ' ' + it.brand + ' ' + it.parent + ' ' + it.aisleLabel + ' ' + it.origin + ' ' + it.hook).toLowerCase();
       return q.split(/\s+/).every(function(tok){ return hay.indexOf(tok) !== -1; });
     });
     searchResults.innerHTML = '';
