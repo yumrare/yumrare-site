@@ -20,7 +20,7 @@
 [hidden]{display:none!important}
 /* z-index scale (rationalized): page content 0 · sticky mobile buy bar 25 ·
    sticky header 30 · skip link 60 · backdrop 80 · search dialog 90 ·
-   stash drawer 95. Nothing else may invent a z-index. */
+   cart drawer 95. Nothing else may invent a z-index. */
 h1,h2,h3{text-wrap:balance;letter-spacing:-.01em}
 .yr-count,.yr-stock,.yr-tile p{font-variant-numeric:tabular-nums}
 html{scrollbar-gutter:stable;scroll-behavior:smooth;overflow-x:clip}
@@ -110,6 +110,8 @@ p.yr-sub{margin:0 0 18px;color:var(--muted);max-width:680px}
 .yr-badge.import-only,.yr-corner.import-only{background:#2563EB}.yr-badge.limited-run,.yr-corner.limited-run{background:var(--berry)}.yr-badge.regional-exclusive,.yr-corner.regional-exclusive{background:var(--teal)}.yr-badge.small-batch,.yr-corner.small-batch{background:#8A5A2B}.yr-badge.gone-but-trading,.yr-corner.gone-but-trading{background:#5B6472}
 .yr-reason{margin:0;font-size:.83rem;color:var(--muted)}
 .yr-pack{margin:0;font-size:.83rem;font-weight:700}
+.yr-price{margin:0;font-weight:900;font-size:1.12rem;font-variant-numeric:tabular-nums}
+.yr-price.big{font-size:1.55rem}
 .yr-stock{margin:2px 0 0;font-size:var(--fs-xs);color:var(--faint)}
 .yr-coll{align-self:flex-start;font-size:.76rem;font-weight:800;border:2px dashed #5B6472;color:#424A58;border-radius:var(--r-s);padding:3px 9px}
 .yr-actions{display:flex;flex-wrap:wrap;gap:var(--s2);margin-top:auto;padding-top:var(--s2)}
@@ -162,7 +164,7 @@ p.yr-sub{margin:0 0 18px;color:var(--muted);max-width:680px}
 .yr-sharebtn:active{transform:translateY(1px)}
 .yr-share-note{font-size:var(--fs-sm);font-weight:700;color:var(--teal)}
 .yr-empty{border:2px dashed #B9B0D0;border-radius:var(--r-m);background:#fff;color:var(--muted);padding:var(--s5);text-align:center;max-width:680px}
-.yr-mkt,.yr-fbtn,.yr-tile,.yr-cta,.yr-util,.yr-buy,.yr-stashbtn,.yr-news button,.yr-railbtn{transition:background-color .18s ease,box-shadow .18s ease,transform .18s ease,filter .18s ease}
+.yr-mkt,.yr-fbtn,.yr-tile,.yr-cta,.yr-util,.yr-buy,.yr-stashbtn,.yr-news button,.yr-railbtn,.yr-paypal-btn{transition:background-color .18s ease,box-shadow .18s ease,transform .18s ease,filter .18s ease}
 .yr-payrow{display:flex;gap:var(--s2);flex-wrap:wrap;align-items:center;margin:0 0 18px}
 .yr-paylabel{font-size:var(--fs-sm);font-weight:800;letter-spacing:var(--track);text-transform:uppercase;color:var(--muted)}
 .yr-chip{border:2px solid var(--ink);background:#fff;border-radius:var(--r-pill);padding:6px 14px;font-weight:800;font-size:var(--fs-sm);min-height:36px;display:inline-flex;align-items:center}
@@ -244,7 +246,7 @@ footer.yr-foot .yr-payrow{margin:14px 0 0}
 .yr-fine{font-size:var(--fs-xs);opacity:.78;margin-top:22px;max-width:820px}
 .yr-fine.yr-copy{margin-top:6px}
 .yr-footmark{width:46px;height:46px;border-radius:50%;display:block;margin:0 0 10px}
-/* Overlays (backdrop / search / stash drawer): the CLOSED state is the CSS
+/* Overlays (backdrop / search / cart drawer): the CLOSED state is the CSS
    default — transparent, visibility:hidden, pointer-events off, and (for
    the drawer) translated fully off-canvas. The open state is keyed to
    :not([hidden]), i.e. to the same attribute the JS and the bundle router
@@ -284,6 +286,15 @@ footer.yr-foot .yr-payrow{margin:14px 0 0}
 .yr-drawer-foot{margin-top:auto;border-top:2px solid var(--line);padding-top:14px}
 .yr-stash-total{font-weight:800;margin:0 0 10px}
 .yr-buy.big{width:100%;padding:12px;font-size:1rem}
+/* Round 13: cart totals + PayPal checkout in the drawer foot */
+.yr-cart-lines{display:flex;flex-direction:column;gap:5px;margin:0 0 12px}
+.yr-cart-line{display:flex;justify-content:space-between;gap:14px;margin:0;font-size:.97rem}
+.yr-cart-line span:last-child{font-variant-numeric:tabular-nums}
+.yr-cart-total{font-weight:900;font-size:1.08rem;border-top:2px solid var(--line);padding-top:8px;margin-top:3px}
+.yr-ship-hint{margin:0;font-size:.85rem;font-weight:700;color:var(--teal)}
+.yr-paypal-btn{width:100%;border:2px solid var(--ink);background:var(--gold);color:var(--ink);font-weight:800;border-radius:var(--r-pill);padding:12px;font-size:1rem;cursor:pointer;font-family:inherit}
+.yr-paypal-btn:hover{filter:brightness(.95)}
+.yr-paypal-btn:active{transform:translateY(1px)}
 .yr-skiplink{position:absolute;left:-9999px;top:0;background:var(--ink);color:#fff;padding:8px 14px;z-index:60}
 .yr-skiplink:focus{left:8px;top:8px}
 :focus-visible{outline:3px solid var(--violet);outline-offset:2px}
@@ -319,3 +330,6 @@ footer.yr-foot .yr-payrow{margin:14px 0 0}
 .yr-cform textarea{resize:vertical}
 .yr-cform button{margin-top:18px}
 .yr-honey{position:absolute!important;left:-9999px!important;width:1px!important;height:1px;opacity:0}
+
+/* Round 13: contact-page banner (?sent=1 message sent / ?order=received) */
+.yr-banner{border:2px solid var(--ink);border-radius:var(--r-m);background:#DDF0EA;padding:14px 18px;font-weight:700;max-width:720px;margin:18px 0 0}
