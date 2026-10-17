@@ -534,10 +534,12 @@
     });
   }
 
-  /* ---------- contact-page banners + the PayPal return ----------
+  /* ---------- return banners + the PayPal return ----------
      ?sent=1 is the contact form's own return (FormSubmit _next);
-     ?order=received is PayPal's return after an authorization. The
-     banner element exists only on the contact page. Returning from
+     ?joined=1 is the homepage Rare Finds list's return (FormSubmit
+     _next); ?order=received is PayPal's return after an authorization.
+     The banner element exists on the contact page and in the homepage
+     Rare Finds block. Returning from
      PayPal also clears the cart: the order is placed, so a return
      visit starts with a fresh cart. (Written as plain location.search —
      the preview bundler asserts the window-prefixed form of that
@@ -554,6 +556,9 @@
       banner.hidden = false;
     } else if(ret.get('sent') === '1'){
       banner.textContent = 'Message sent \u2014 thanks for writing. We answer within one business day.';
+      banner.hidden = false;
+    } else if(ret.get('joined') === '1'){
+      banner.textContent = 'You\u2019re on the list \u2014 first Rare Finds mail lands when a watched find returns or a new one verifies.';
       banner.hidden = false;
     }
   }
