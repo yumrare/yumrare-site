@@ -69,7 +69,7 @@ p.yr-sub{margin:0 0 18px;color:var(--muted);max-width:680px}
 .yr-tile:hover{transform:translate(-1px,-1px);box-shadow:6px 6px 0 rgba(36,30,49,.9)}
 .yr-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:20px;align-items:stretch}
 .yr-railwrap{display:flex;align-items:center;gap:10px}
-.yr-rail{display:flex;gap:20px;overflow-x:auto;scroll-snap-type:x mandatory;padding:6px 2px 16px;flex:1;min-width:0}
+.yr-rail{display:flex;align-items:flex-start;gap:20px;overflow-x:auto;scroll-snap-type:x mandatory;padding:6px 2px 16px;flex:1;min-width:0}
 .yr-rail .yr-card{flex:0 0 272px;scroll-snap-align:start}
 .yr-railbtn{flex:none;width:44px;height:44px;border:2px solid var(--ink);border-radius:50%;background:#fff;font-size:1.35rem;font-weight:900;line-height:1;cursor:pointer;font-family:inherit;color:var(--ink);padding:0}
 .yr-railbtn:hover{background:#EFE7D3}
